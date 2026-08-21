@@ -1,1 +1,1 @@
-## ipl analysis
+## IPL ANALYTICS PROJECT
