@@ -1,0 +1,7 @@
+[theme]
+primaryColor = "#12CFE0"
+backgroundColor = "#050B0A"
+secondaryBackgroundColor = "#081310"
+textColor = "#F5F7F6"
+font = "sans serif"
+chartCategoricalColors = ["#12CFE0", "#7DE36A", "#A65DB5", "#E58DB7"]
