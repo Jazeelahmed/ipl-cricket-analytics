@@ -630,32 +630,65 @@ def find_and_connect_db():
     """
     Locates the populated SQLite database relative to this app.
     """
-    project_root = Path(__file__).resolve().parents[2]
+    app_dir = Path(__file__).resolve().parent
+    project_root = next(
+        (
+            directory
+            for directory in (app_dir, *app_dir.parents)
+            if (directory / "data" / "raw").is_dir()
+        ),
+        app_dir,
+    )
     candidates = [
         project_root / "data" / "raw" / "ipl.db",
         project_root / "data" / "ipl.db",
         project_root / "ipl.db",
     ]
+    rejected_candidates = []
 
     for db_path in candidates:
-        if db_path.is_file() and db_path.stat().st_size > 0:
-            try:
-                with sqlite3.connect(db_path) as conn:
-                    objects = {
-                        row[0]
-                        for row in conn.execute(
-                            "SELECT name FROM sqlite_master WHERE type IN ('table', 'view')"
-                        )
-                    }
-                if "v_matches_clean" in objects:
-                    return str(db_path)
-            except sqlite3.Error:
-                continue
+        if not db_path.is_file():
+            continue
+        if db_path.stat().st_size == 0:
+            rejected_candidates.append(f"{db_path}: file is empty")
+            continue
+
+        try:
+            with sqlite3.connect(db_path) as conn:
+                objects = {
+                    row[0]
+                    for row in conn.execute(
+                        "SELECT name FROM sqlite_master WHERE type IN ('table', 'view')"
+                    )
+                }
+                if "v_matches_clean" not in objects:
+                    rejected_candidates.append(
+                        f"{db_path}: v_matches_clean is missing"
+                    )
+                    continue
+                match_count = conn.execute(
+                    "SELECT COUNT(*) FROM v_matches_clean"
+                ).fetchone()[0]
+        except sqlite3.Error as error:
+            rejected_candidates.append(f"{db_path}: {error}")
+            continue
+
+        if match_count == 0:
+            rejected_candidates.append(
+                f"{db_path}: v_matches_clean contains no rows"
+            )
+            continue
+        return str(db_path)
 
     searched = ", ".join(str(path) for path in candidates)
+    details = (
+        f" Database checks: {'; '.join(rejected_candidates)}."
+        if rejected_candidates
+        else ""
+    )
     raise FileNotFoundError(
         f"Could not find a populated IPL database containing v_matches_clean. "
-        f"Searched: {searched}"
+        f"Searched: {searched}.{details}"
     )
 
 try:
