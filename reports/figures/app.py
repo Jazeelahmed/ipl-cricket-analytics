@@ -8,6 +8,7 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 
+
 # ---------------------------------------------------------
 # Page Setup
 # ---------------------------------------------------------
@@ -22,36 +23,42 @@ st.markdown(
     <style>
     :root {
         color-scheme: dark;
-        --primary-color: #12CFE0;
-        --background-color: #050B0A;
-        --secondary-background-color: #081310;
-        --text-color: #F5F7F6;
+        --primary-color: #A77F99;
+        --background-color: #0B090B;
+        --secondary-background-color: #171417;
+        --text-color: #F2EEF1;
     }
     .stApp,
     [data-testid="stAppViewContainer"],
     [data-testid="stMain"],
     [data-testid="stHeader"] {
-        background-color: #050B0A !important;
-        color: #F5F7F6 !important;
+        background-color: #0B090B !important;
+        color: #F2EEF1 !important;
     }
     .stApp {
         background:
-            radial-gradient(ellipse at 14% 22%, rgba(18, 207, 224, 0.055), transparent 34%),
-            radial-gradient(ellipse at 86% 74%, rgba(125, 227, 106, 0.043), transparent 38%),
-            #050B0A !important;
+            radial-gradient(ellipse at 16% 12%, rgba(117, 91, 108, 0.19), transparent 38%),
+            radial-gradient(ellipse at 82% 88%, rgba(77, 61, 72, 0.16), transparent 42%),
+            #0B090B !important;
     }
-    [data-testid="stHeader"] { background-color: #050B0A !important; }
+    [data-testid="stHeader"] { background-color: transparent !important; }
+    body,
+    [data-testid="stAppViewContainer"] {
+        font-family: Inter, "Segoe UI", sans-serif;
+    }
+    [data-testid="stMainBlockContainer"] {
+        position: relative;
+        isolation: isolate;
+        background: linear-gradient(135deg, #393239 0%, #29242A 48%, #211D22 100%);
+        border: 1px solid rgba(198, 179, 192, 0.20);
+        border-radius: 20px;
+        padding: clamp(1rem, 1.8vw, 1.7rem);
+        box-shadow:
+            0 22px 54px rgba(0, 0, 0, 0.36),
+            inset 0 1px rgba(255, 255, 255, 0.045);
+    }
     [data-testid="stMain"] {
-        background-image:
-            radial-gradient(ellipse at 16% 18%, rgba(18, 207, 224, 0.045), transparent 34%),
-            radial-gradient(ellipse at 82% 76%, rgba(18, 207, 224, 0.03), transparent 38%),
-            repeating-linear-gradient(0deg, rgba(18, 207, 224, 0.035) 0 1px, transparent 1px 58px),
-            repeating-linear-gradient(90deg, rgba(18, 207, 224, 0.035) 0 1px, transparent 1px 58px) !important;
-        background-size: 150% 150%, 150% 150%, 58px 58px, 58px 58px !important;
-        animation: ipl-css-grid-drift 32s linear infinite alternate;
-    }
-    @keyframes ipl-css-grid-drift {
-        to { background-position: 14% 10%, 86% 90%, 0 58px, 58px 0; }
+        background: transparent !important;
     }
     iframe[title="Dashboard animation controller"] {
         position: fixed !important;
@@ -65,11 +72,16 @@ st.markdown(
     }
     [data-testid="stSidebar"],
     [data-testid="stSidebarContent"] {
-        background-color: #081310 !important;
-        border-right: 1px solid #1B2A25;
+        background: #0A090B !important;
+        border-right: 1px solid #2D282E;
     }
     [data-testid="stSidebar"] {
-        box-shadow: 10px 0 32px rgba(0, 0, 0, 0.24), inset -1px 0 rgba(18, 207, 224, 0.035);
+        padding: 0.65rem;
+        box-shadow: 10px 0 32px rgba(0, 0, 0, 0.28);
+    }
+    [data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+        border: 1px solid #29242A;
+        border-radius: 18px;
     }
     [data-testid="stAppViewContainer"] h1,
     [data-testid="stAppViewContainer"] h2,
@@ -84,334 +96,173 @@ st.markdown(
     [data-testid="stSidebar"] p,
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] span {
-        color: #F5F7F6;
+        color: #F2EEF1;
+    }
+    [data-testid="stAppViewContainer"] h1 {
+        font-size: clamp(1.7rem, 2.2vw, 2rem);
+        font-weight: 500;
+        letter-spacing: -0.025em;
+    }
+    [data-testid="stAppViewContainer"] h2 {
+        font-size: 1.35rem;
+        font-weight: 500;
+        letter-spacing: -0.015em;
+    }
+    [data-testid="stAppViewContainer"] h3 {
+        font-size: 1.12rem;
+        font-weight: 500;
     }
     [data-testid="stCaptionContainer"],
     [data-testid="stCaptionContainer"] p,
     [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
-        color: #91A19B !important;
+        color: #B9B0B8 !important;
     }
     [data-testid="stMetric"] {
-        background: linear-gradient(145deg, rgba(13, 29, 25, 0.98), rgba(8, 19, 16, 0.98));
-        border: 1px solid #1B2A25;
-        border-radius: 12px;
+        background: linear-gradient(145deg, #201B20, #141215);
+        border: 1px solid #39323A;
+        border-radius: 14px;
         padding: 16px 18px;
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.025);
-        transition: box-shadow 240ms ease, border-color 240ms ease, transform 240ms ease, background-color 240ms ease;
+        box-shadow: 0 9px 22px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.035);
+        transition: box-shadow 180ms ease, border-color 180ms ease;
     }
     [data-testid="stMetric"]:hover {
-        border-color: rgba(18, 207, 224, 0.38);
-        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.30), 0 0 16px rgba(18, 207, 224, 0.13), inset 0 1px rgba(255, 255, 255, 0.04);
-        transform: translateY(-2px);
+        border-color: #64505F;
+        box-shadow: 0 11px 24px rgba(0, 0, 0, 0.30), 0 0 12px rgba(151, 105, 138, 0.08);
     }
     [data-testid="stMetric"] label,
     [data-testid="stMetric"] [data-testid="stMetricValue"],
     [data-testid="stMetric"] [data-testid="stMetricLabel"],
     [data-testid="stMetric"] [data-testid="stMetricDelta"] {
-        color: #F5F7F6 !important;
+        color: #F2EEF1 !important;
     }
     [data-testid="stMetric"] [data-testid="stMetricValue"] {
-        color: #7DE36A !important;
-        text-shadow: 0 0 12px rgba(125, 227, 106, 0.2);
+        color: #F0D4E4 !important;
+        text-shadow: 0 0 10px rgba(210, 151, 188, 0.12);
     }
     [data-testid="stTab"][aria-selected="true"] {
-        color: #12CFE0 !important;
-        border-bottom: 2px solid #12CFE0 !important;
-        text-shadow: 0 0 12px rgba(18, 207, 224, 0.32);
+        color: #F3EAF0 !important;
+        background: linear-gradient(110deg, #775D70, #423540) !important;
+        border-radius: 999px !important;
+        text-shadow: none;
     }
     [data-testid="stTab"]:not([aria-selected="true"]) {
-        color: #91A19B !important;
+        color: #C2BAC2 !important;
     }
     [data-testid="stTab"] {
-        transition: color 180ms ease, text-shadow 180ms ease;
+        border-radius: 999px !important;
+        transition: color 160ms ease, background-color 160ms ease;
+    }
+    [data-testid="stTab"] .react-aria-SelectionIndicator {
+        background: #A77F99 !important;
+        border-radius: 999px;
     }
     [data-testid="stTab"]:hover {
-        color: #F5F7F6 !important;
+        color: #F5EDF3 !important;
+        background-color: rgba(130, 99, 121, 0.22) !important;
     }
     [data-testid="stTabs"] [data-baseweb="tab-list"] {
-        border-bottom: 1px solid rgba(27, 42, 37, 0.82);
-        gap: 0.35rem;
+        border-bottom: 1px solid rgba(186, 166, 181, 0.16);
+        gap: 0.45rem;
+        padding: 0.25rem 0 0.55rem;
     }
     [data-baseweb="select"] > div,
     [data-baseweb="input"] > div,
     [data-baseweb="textarea"] > div,
     [data-testid="stMultiSelect"] [data-baseweb="select"] > div {
-        background-color: #081310 !important;
-        color: #F5F7F6 !important;
-        border-color: #1B2A25 !important;
-        border-radius: 9px;
-        box-shadow: inset 0 1px rgba(255, 255, 255, 0.025), 0 4px 12px rgba(0, 0, 0, 0.12);
-        transition: border-color 180ms ease, box-shadow 180ms ease;
+        background-color: #171417 !important;
+        color: #F2EEF1 !important;
+        border-color: #39323A !important;
+        border-radius: 10px;
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.035), 0 4px 12px rgba(0, 0, 0, 0.18);
+        transition: border-color 160ms ease, box-shadow 160ms ease;
     }
     [data-baseweb="select"] > div:hover,
     [data-baseweb="input"] > div:hover,
     [data-baseweb="textarea"] > div:hover {
-        border-color: rgba(18, 207, 224, 0.38) !important;
-        box-shadow: 0 0 10px rgba(18, 207, 224, 0.08);
+        border-color: #80677A !important;
+        box-shadow: 0 0 10px rgba(164, 119, 150, 0.10);
     }
     [data-baseweb="tag"] {
-        background-color: #123a3c !important;
-        color: #12CFE0 !important;
+        background-color: #493846 !important;
+        color: #F0D4E4 !important;
         border-radius: 7px !important;
     }
     [data-baseweb="popover"],
     [data-baseweb="menu"],
     [role="listbox"],
     [role="option"] {
-        background-color: #081310 !important;
-        color: #F5F7F6 !important;
+        background-color: #171417 !important;
+        color: #F2EEF1 !important;
     }
     [role="option"]:hover,
     [aria-selected="true"][role="option"] {
-        background-color: #1B2A25 !important;
+        background-color: #493846 !important;
     }
     [data-testid="stButton"] button,
     [data-testid="stDownloadButton"] button,
     [data-testid="stFormSubmitButton"] button {
-        border: 1px solid #1B2A25 !important;
+        border: 1px solid #403740 !important;
         border-radius: 9px !important;
-        background: linear-gradient(145deg, #10221d, #081310) !important;
-        box-shadow: 0 5px 14px rgba(0, 0, 0, 0.20), inset 0 1px rgba(255, 255, 255, 0.035);
-        transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+        background: linear-gradient(145deg, #282229, #171417) !important;
+        box-shadow: 0 5px 14px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.04);
+        transition: border-color 160ms ease, box-shadow 160ms ease;
     }
     [data-testid="stButton"] button:hover,
     [data-testid="stDownloadButton"] button:hover,
     [data-testid="stFormSubmitButton"] button:hover {
-        border-color: rgba(18, 207, 224, 0.42) !important;
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.26), 0 0 12px rgba(18, 207, 224, 0.11);
-        transform: translateY(-1px);
+        border-color: #80677A !important;
+        box-shadow: 0 7px 16px rgba(0, 0, 0, 0.28), 0 0 10px rgba(164, 119, 150, 0.08);
     }
     [data-testid="stButton"] button:focus-visible,
     [data-testid="stDownloadButton"] button:focus-visible,
     [data-testid="stFormSubmitButton"] button:focus-visible,
     [data-baseweb="select"] > div:focus-within,
     [data-baseweb="input"] > div:focus-within {
-        outline: 2px solid rgba(18, 207, 224, 0.55);
+        outline: 2px solid rgba(191, 143, 174, 0.72);
         outline-offset: 2px;
     }
     [data-testid="stSlider"] [data-baseweb="slider"] div[role="slider"] {
-        background-color: #12CFE0 !important;
-        border-color: #12CFE0 !important;
-        box-shadow: 0 0 10px rgba(18, 207, 224, 0.35);
+        background-color: #C08EAD !important;
+        border-color: #C08EAD !important;
+        box-shadow: 0 0 8px rgba(192, 142, 173, 0.25);
     }
     [data-testid="stSlider"] [data-baseweb="slider"] div[data-testid] {
-        background-color: #12CFE0;
+        background-color: #C08EAD;
     }
     [data-testid="stExpander"] {
-        border-color: #1B2A25 !important;
-        background-color: #081310 !important;
-        border-radius: 10px !important;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), inset 0 1px rgba(255, 255, 255, 0.02);
-        transition: border-color 180ms ease, box-shadow 180ms ease;
+        border-color: #342D35 !important;
+        background-color: #151216 !important;
+        border-radius: 11px !important;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.025);
+        transition: border-color 160ms ease, box-shadow 160ms ease;
     }
     [data-testid="stExpander"]:hover {
-        border-color: rgba(18, 207, 224, 0.30) !important;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20), 0 0 10px rgba(18, 207, 224, 0.06);
+        border-color: #665361 !important;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.23), 0 0 9px rgba(164, 119, 150, 0.06);
     }
     [data-testid="stPlotlyChart"] {
-        background: linear-gradient(145deg, rgba(11, 25, 21, 0.98), rgba(8, 19, 16, 0.98));
-        border: 1px solid #1B2A25;
-        border-radius: 12px;
+        background: #111013;
+        border: 1px solid #38323A;
+        border-radius: 14px;
         padding: 8px;
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.20), inset 0 1px rgba(255, 255, 255, 0.025);
-        transition: box-shadow 240ms ease, border-color 240ms ease, transform 240ms ease;
+        box-shadow: 0 9px 22px rgba(0, 0, 0, 0.25), inset 0 1px rgba(255, 255, 255, 0.025);
+        transition: box-shadow 160ms ease, border-color 160ms ease;
     }
     [data-testid="stPlotlyChart"] .barlayer .point path {
-        fill: #12CFE0 !important;
-        stroke: rgba(18, 207, 224, 0.55) !important;
+        fill: #A77F99 !important;
+        stroke: #B48BA6 !important;
     }
     [data-testid="stPlotlyChart"] .scatterlayer .trace path.js-line {
-        stroke: #E58DB7 !important;
-        filter: drop-shadow(0 0 3px rgba(229, 141, 183, 0.32));
+        stroke: #C28EAA !important;
+        filter: none !important;
     }
     [data-testid="stPlotlyChart"] .scatterlayer .trace path.point {
-        fill: #12CFE0 !important;
-        stroke: #12CFE0 !important;
+        fill: #C28EAA !important;
+        stroke: #C28EAA !important;
     }
     [data-testid="stPlotlyChart"]:hover {
-        border-color: rgba(18, 207, 224, 0.28);
-        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.27), 0 0 13px rgba(18, 207, 224, 0.09);
-        transform: translateY(-1px);
-    }
-    .ipl-dashboard-fade-in {
-        animation: ipl-dashboard-fade-in 550ms ease-out both;
-    }
-    @keyframes ipl-dashboard-fade-in {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    .ipl-boot-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 2147483647;
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        isolation: isolate;
-        background:
-            radial-gradient(ellipse at center, rgba(7, 35, 32, 0.97), rgba(3, 9, 9, 0.99) 58%),
-            #030909;
-        opacity: 1;
-        transition: opacity 560ms cubic-bezier(0.22, 1, 0.36, 1), visibility 560ms;
-        animation: ipl-boot-css-exit 2s ease-in forwards;
-    }
-    @keyframes ipl-boot-css-exit {
-        0%, 82% { opacity: 1; visibility: visible; }
-        100% { opacity: 0; visibility: hidden; pointer-events: none; }
-    }
-    .ipl-boot-overlay.is-exiting {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-    }
-    .ipl-boot-grid,
-    .ipl-boot-scanline,
-    .ipl-boot-particles {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-    }
-    .ipl-boot-grid {
-        opacity: 0.28;
-        background:
-            radial-gradient(ellipse at 50% 62%, rgba(18, 207, 224, 0.15), transparent 43%),
-            repeating-linear-gradient(0deg, rgba(18, 207, 224, 0.14) 0 1px, transparent 1px 48px),
-            repeating-linear-gradient(90deg, rgba(18, 207, 224, 0.14) 0 1px, transparent 1px 48px);
-        mask-image: linear-gradient(transparent, black 30%, black 75%, transparent);
-        transform: perspective(650px) rotateX(58deg) scale(1.6) translateY(23%);
-        transform-origin: center 70%;
-        animation: ipl-boot-grid-drift 8s linear infinite;
-    }
-    .ipl-boot-scanline {
-        opacity: 0.20;
-        background: repeating-linear-gradient(
-            to bottom,
-            transparent 0 5px,
-            rgba(18, 207, 224, 0.22) 6px,
-            transparent 7px 10px
-        );
-        animation: ipl-boot-scan 5s linear infinite;
-    }
-    .ipl-boot-particle {
-        position: absolute;
-        left: var(--x);
-        top: var(--y);
-        width: var(--size);
-        height: var(--size);
-        border-radius: 50%;
-        background: #73f7ed;
-        box-shadow: 0 0 8px 2px rgba(18, 207, 224, 0.55);
-        opacity: 0;
-        animation: ipl-boot-float var(--duration) ease-in-out var(--delay) infinite;
-    }
-    .ipl-boot-core {
-        position: relative;
-        display: grid;
-        width: min(72vw, 420px);
-        aspect-ratio: 1;
-        place-items: center;
-        filter: drop-shadow(0 0 34px rgba(18, 207, 224, 0.17));
-    }
-    .ipl-boot-ring {
-        position: absolute;
-        inset: var(--inset);
-        border: 1px solid rgba(18, 207, 224, var(--alpha));
-        border-radius: 50%;
-        box-shadow: inset 0 0 18px rgba(18, 207, 224, 0.08), 0 0 18px rgba(18, 207, 224, 0.11);
-        animation: ipl-boot-rotate var(--speed) linear infinite;
-    }
-    .ipl-boot-ring::before,
-    .ipl-boot-ring::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: -4px;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #7df7ef;
-        box-shadow: 0 0 12px 3px rgba(18, 207, 224, 0.78);
-    }
-    .ipl-boot-ring::after {
-        top: 18%;
-        left: auto;
-        right: 8%;
-        width: 4px;
-        height: 4px;
-        background: #7de36a;
-        box-shadow: 0 0 10px 2px rgba(125, 227, 106, 0.68);
-    }
-    .ipl-boot-ring-inner {
-        inset: 18%;
-        border-style: dashed;
-        border-color: rgba(125, 227, 106, 0.48);
-        animation-direction: reverse;
-    }
-    .ipl-boot-ring-core {
-        inset: 31%;
-        border-width: 2px;
-        border-color: rgba(18, 207, 224, 0.65);
-        animation-duration: 9s;
-    }
-    .ipl-boot-energy {
-        width: 25%;
-        aspect-ratio: 1;
-        border: 1px solid rgba(146, 255, 247, 0.72);
-        border-radius: 50%;
-        background: radial-gradient(circle, #d8fffd 0 4%, #12CFE0 14%, rgba(18, 207, 224, 0.18) 48%, transparent 72%);
-        box-shadow: 0 0 24px rgba(18, 207, 224, 0.72), 0 0 74px rgba(18, 207, 224, 0.36);
-        animation: ipl-boot-pulse 1.5s ease-in-out infinite;
-    }
-    .ipl-boot-progress {
-        position: absolute;
-        bottom: 8%;
-        width: 42%;
-        height: 2px;
-        overflow: hidden;
-        border-radius: 2px;
-        background: rgba(18, 207, 224, 0.14);
-        box-shadow: 0 0 12px rgba(18, 207, 224, 0.15);
-    }
-    .ipl-boot-progress::after {
-        content: "";
-        display: block;
-        width: 35%;
-        height: 100%;
-        background: #12CFE0;
-        box-shadow: 0 0 12px 2px rgba(18, 207, 224, 0.75);
-        animation: ipl-boot-progress 2.45s ease-in-out forwards;
-    }
-    @keyframes ipl-boot-rotate { to { transform: rotate(360deg); } }
-    @keyframes ipl-boot-pulse {
-        0%, 100% { transform: scale(0.78); opacity: 0.76; }
-        50% { transform: scale(1.14); opacity: 1; }
-    }
-    @keyframes ipl-boot-grid-drift {
-        to { background-position: 0 0, 0 48px, 48px 0; }
-    }
-    @keyframes ipl-boot-scan {
-        from { transform: translateY(-25%); }
-        to { transform: translateY(25%); }
-    }
-    @keyframes ipl-boot-float {
-        0% { transform: translate3d(0, 18px, 0) scale(0.55); opacity: 0; }
-        35% { opacity: 0.72; }
-        100% { transform: translate3d(var(--drift), -58px, 0) scale(1); opacity: 0; }
-    }
-    @keyframes ipl-boot-progress {
-        from { transform: translateX(-120%); }
-        to { transform: translateX(320%); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-            scroll-behavior: auto !important;
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
-        .ipl-boot-overlay { display: none !important; }
+        border-color: #5C4B58;
+        box-shadow: 0 11px 25px rgba(0, 0, 0, 0.30), 0 0 10px rgba(164, 119, 150, 0.06);
     }
     </style>
     """,
@@ -424,9 +275,7 @@ st.iframe(
     (() => {
         const window = globalThis.parent;
         const document = window.document;
-        const reducedMotion = document.hidden || window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
+        const reducedMotion = true;
         const animatedMetrics = window.__iplAnimatedMetrics || (
             window.__iplAnimatedMetrics = new Map()
         );
@@ -884,36 +733,33 @@ def season_condition(seasons: list, column: str = "season") -> tuple:
 
 def finish_chart(fig, height: int = 420, x_tickangle: int = 0):
     """Apply a consistent size, spacing, typography, and fully visible axes."""
-    if fig.data and all(trace.type in {"bar", "scatter"} for trace in fig.data):
-        fig.update_layout(
-            transition=dict(duration=420, easing="cubic-in-out")
-        )
+    fig.update_layout(transition=dict(duration=0))
     fig.update_layout(
         template="plotly_dark",
         height=height,
         autosize=True,
         margin=dict(l=70, r=36, t=54, b=78 if x_tickangle else 58),
-        font=dict(family="Arial, sans-serif", size=12, color="#F5F7F6"),
-        paper_bgcolor="#081310",
-        plot_bgcolor="#081310",
-        colorway=["#12CFE0", "#7DE36A", "#A65DB5", "#E58DB7"],
-        legend=dict(title_text="", font=dict(color="#F5F7F6")),
+        font=dict(family="Inter, Segoe UI, sans-serif", size=12, color="#E9E3E8"),
+        paper_bgcolor="rgba(0, 0, 0, 0)",
+        plot_bgcolor="#111013",
+        colorway=["#A77F99", "#C28EAA", "#806B7B", "#D0B3C4"],
+        legend=dict(title_text="", font=dict(color="#D7CFD6")),
         xaxis=dict(
             automargin=True,
             tickangle=x_tickangle,
             title_standoff=12,
-            tickfont=dict(color="#91A19B"),
-            title_font=dict(color="#F5F7F6"),
-            gridcolor="#1B2A25",
-            zerolinecolor="#1B2A25",
+            tickfont=dict(color="#B8AFB7"),
+            title_font=dict(color="#E9E3E8"),
+            gridcolor="#343037",
+            zerolinecolor="#474049",
         ),
         yaxis=dict(
             automargin=True,
             title_standoff=12,
-            tickfont=dict(color="#91A19B"),
-            title_font=dict(color="#F5F7F6"),
-            gridcolor="#1B2A25",
-            zerolinecolor="#1B2A25",
+            tickfont=dict(color="#B8AFB7"),
+            title_font=dict(color="#E9E3E8"),
+            gridcolor="#343037",
+            zerolinecolor="#474049",
         ),
     )
     return fig
@@ -1043,13 +889,13 @@ with tab_overview:
         x=df_team_perf['team'],
         y=df_team_perf['matches_played'],
         name='Matches Played',
-        marker_color='#A65DB5'
+        marker_color='#806B7B'
     ))
     fig_hero_overview.add_trace(go.Bar(
         x=df_team_perf['team'],
         y=df_team_perf['wins'],
         name='Wins',
-        marker_color='#12CFE0'
+        marker_color='#A77F99'
     ))
     fig_hero_overview.update_layout(
         barmode='group',
@@ -1094,7 +940,7 @@ with tab_overview:
             y='venue_clean',
             orientation="h",
             color='status',
-            color_discrete_map={'Reliable Sample (>=15)': '#12CFE0', 'Low Sample (<15)': '#A65DB5'},
+            color_discrete_map={'Reliable Sample (>=15)': '#A77F99', 'Low Sample (<15)': '#806B7B'},
             labels={'venue_clean': 'Cleaned Venue', 'match_count': 'Matches Held'}
         )
         fig_v2.update_yaxes(
@@ -1102,7 +948,7 @@ with tab_overview:
             tickvals=df_venue_counts["venue_clean"],
             ticktext=wrap_ground_labels(df_venue_counts["venue_clean"]),
         )
-        fig_v2.add_vline(x=cut_off_threshold, line_dash="dash", line_color="#E58DB7")
+        fig_v2.add_vline(x=cut_off_threshold, line_dash="dash", line_color="#C28EAA")
         fig_v2.update_layout(
             legend=dict(
                 orientation="h",
@@ -1156,7 +1002,7 @@ with tab_overview:
             orientation="h",
             labels={'venue_clean': 'Cleaned Venue', 'bat_first_win_pct': 'Batting 1st Win %'},
             hover_data=['total_matches'],
-            color_discrete_sequence=['#12CFE0']
+            color_discrete_sequence=['#A77F99']
         )
         fig_v3.update_yaxes(
             tickmode="array",
@@ -1164,7 +1010,7 @@ with tab_overview:
             ticktext=wrap_ground_labels(df_eligible_venues["venue_clean"]),
         )
         if league_bat_first_pct is not None:
-            fig_v3.add_vline(x=league_bat_first_pct, line_dash="dot", line_color="#E58DB7")
+            fig_v3.add_vline(x=league_bat_first_pct, line_dash="dot", line_color="#C28EAA")
         fig_v3.update_layout(xaxis_title="Batting-first win rate (%)", yaxis_title=None, xaxis_range=[0, 100])
         st.caption(
             f"Showing {len(df_eligible_venues)} eligible grounds ranked by batting-first win rate. "
@@ -1195,7 +1041,7 @@ with tab_overview:
                 ORDER BY six_count DESC
             """.format(season_filter=sixes_sql), sixes_params)
             fig_v4 = px.bar(df_sixes.sort_values("six_count"), x='six_count', y='batting_team',
-                            orientation="h", color_discrete_sequence=['#7DE36A'],
+                            orientation="h", color_discrete_sequence=['#B18BA3'],
                             labels={'batting_team': 'Team', 'six_count': 'Total Sixes'})
             st.plotly_chart(
                 finish_chart(fig_v4, height=440),
@@ -1324,11 +1170,11 @@ with tab_venue:
             x=[selected_venue],
             y=[v_avg],
             name="Venue 1st Innings Avg",
-            marker_color="#12CFE0",
+            marker_color="#A77F99",
             text=[f"{v_avg} runs (n={venue_innings_count})"],
             textposition="auto"
         ))
-        fig_hero_venue.add_hline(y=l_avg, line_dash="dash", line_color="#E58DB7",
+        fig_hero_venue.add_hline(y=l_avg, line_dash="dash", line_color="#C28EAA",
                                  annotation_text=f"League Average ({l_avg} runs)", annotation_position="top left")
         fig_hero_venue.update_layout(
             yaxis_title="Average 1st Innings Runs",
@@ -1370,7 +1216,7 @@ with tab_venue:
                     names='result_type',
                     values='matches_count',
                     color='result_type',
-                    color_discrete_map={'Batting First Won': '#12CFE0', 'Chasing Won': '#7DE36A', 'Tie/No Result': '#A65DB5'},
+                    color_discrete_map={'Batting First Won': '#A77F99', 'Chasing Won': '#C28EAA', 'Tie/No Result': '#806B7B'},
                     hole=0.4
                 )
                 fig_venue_outcome.update_traces(
@@ -1412,7 +1258,7 @@ with tab_venue:
                 orientation='h',
                 text='appearances',
                 labels={'appearances': 'Appearances', 'team': 'Team'},
-                color_discrete_sequence=['#A65DB5']
+                color_discrete_sequence=['#806B7B']
             )
             fig_venue_teams.update_layout(yaxis=dict(autorange="reversed"))
             st.plotly_chart(
@@ -1502,7 +1348,7 @@ with tab_team:
             labels={'season': 'Season', 'season_win_rate': 'Win Rate (%)'},
             hover_data=['season_played', 'season_won']
         )
-        fig_hero_team.add_hline(y=50.0, line_dash="dash", line_color="#E58DB7", annotation_text="50% Par Benchmark")
+        fig_hero_team.add_hline(y=50.0, line_dash="dash", line_color="#C28EAA", annotation_text="50% Par Benchmark")
         fig_hero_team.update_layout(yaxis_range=[0, 100])
         st.plotly_chart(
             finish_chart(fig_hero_team, height=540, x_tickangle=-30),
@@ -1548,14 +1394,14 @@ with tab_team:
                 x=df_h2h['wins'],
                 name='Wins',
                 orientation='h',
-                marker_color='#7DE36A'
+                marker_color='#B18BA3'
             ))
             fig_h2h.add_trace(go.Bar(
                 y=df_h2h['opponent'],
                 x=df_h2h['losses'],
                 name='Losses',
                 orientation='h',
-                marker_color='#E58DB7'
+                marker_color='#C28EAA'
             ))
             fig_h2h.update_layout(
                 barmode='stack',
@@ -1596,7 +1442,7 @@ with tab_team:
                 y=['match_wins', 'total_times'],
                 barmode='group',
                 labels={'value': 'Count', 'toss_decision': 'Toss Decision'},
-                color_discrete_map={'match_wins': '#12CFE0', 'total_times': '#A65DB5'}
+                color_discrete_map={'match_wins': '#A77F99', 'total_times': '#806B7B'}
             )
             st.plotly_chart(
                 finish_chart(fig_toss, height=440),
