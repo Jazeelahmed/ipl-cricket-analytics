@@ -83,7 +83,6 @@ Pygments==2.21.0
 pyparsing==3.3.2
 python-dateutil==2.9.0.post0
 python-json-logger==4.2.0
-pywinpty==3.0.5
 PyYAML==6.0.3
 pyzmq==27.2.0
 referencing==0.37.0
@@ -114,3 +113,9 @@ webencodings==0.6.1
 websocket-client==1.9.2
 widgetsnbextension==4.0.16
 wrapt==2.4.0
+streamlit
+pandas
+numpy
+plotly
+matplotlib
+Pillow
